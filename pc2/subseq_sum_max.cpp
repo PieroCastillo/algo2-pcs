@@ -5,7 +5,7 @@
 #include <tuple>
 #include <random>
 
-std::pair<int, int> maxSumSubsequence_DC(std::vector<int> items)
+/*std::pair<int, int> maxSumSubsequence_DC(std::vector<int> items)
 {
     int m = 0;
     int p = 0;
@@ -27,7 +27,7 @@ std::pair<int, int> maxSumSubsequenceCore_DC(std::vector<int> items, int i, int 
 
 
     return {m, p};
-}
+}*/
 
 std::pair<int, int> maxSumSubsequence_FB(std::vector<int> items)
 {
