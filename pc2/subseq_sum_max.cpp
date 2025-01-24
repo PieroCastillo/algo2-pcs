@@ -5,6 +5,8 @@
 #include <tuple>
 #include <chrono>
 #include <random>
+#include <string>
+#include <sstream>
 
 /*std::pair<int, int> maxSumSubsequence_DC(std::vector<int> items)
 {
@@ -57,7 +59,7 @@ std::pair<int, int> maxSumSubsequence_FB(std::vector<int> items)
         }
     }
 
-    return {m, p - 1};
+    return {m, p};
 }
 
 std::tuple<int, int, int> maxSumSubsequence_DV(std::vector<int> items, int m, int p)
@@ -96,14 +98,34 @@ std::tuple<int, int, int> maxSumSubsequence_DV(std::vector<int> items, int m, in
     return tupleRight;
 }
 
-void benchmark(int maxSize)
+void benchmark(int maxSize, std::stringstream &text)
 {
-    for(int size = 1; size < maxSize; size++)
+    std::random_device rd;                          // Generador aleatorio basado en hardware
+    std::mt19937 gen(rd());                         // Motor Mersenne Twister
+    std::uniform_int_distribution<> dis(-100, 100); // Números entre 0 y 100
+
+    for (int size = 1; size <= maxSize; size++)
     {
+        // create random vector
+        std::vector<int> vec(size);
+        for (auto &num : vec)
+        {
+            num = dis(gen);
+        }
+
+        // execute and measure time for maxSumSubsequence_FB
         auto startTime = std::chrono::steady_clock::now();
-        // TODO: put code and write benchmarks into file
+        maxSumSubsequence_FB(vec);
         auto endTime = std::chrono::steady_clock::now();
-        auto ellapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+        auto ellapsedFB = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+
+        // execute and measure time for maxSumSubsequence_DV
+        startTime = std::chrono::steady_clock::now();
+        maxSumSubsequence_DV(vec, 0, vec.size() - 1);
+        endTime = std::chrono::steady_clock::now();
+        auto ellapsedDV = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+
+        text << "(" << size << ellapsedFB.count() << "," << ellapsedDV.count() << ")";
     }
 }
 
