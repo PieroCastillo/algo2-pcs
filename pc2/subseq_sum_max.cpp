@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <memory>
 #include <tuple>
+#include <chrono>
 #include <random>
 
 /*std::pair<int, int> maxSumSubsequence_DC(std::vector<int> items)
@@ -95,6 +96,17 @@ std::tuple<int, int, int> maxSumSubsequence_DV(std::vector<int> items, int m, in
     return tupleRight;
 }
 
+void benchmark(int maxSize)
+{
+    for(int size = 1; size < maxSize; size++)
+    {
+        auto startTime = std::chrono::steady_clock::now();
+        // TODO: put code and write benchmarks into file
+        auto endTime = std::chrono::steady_clock::now();
+        auto ellapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+    }
+}
+
 void maxSumSubsequence(std::vector<int> items)
 {
     std::pair<int, int> pairAnswer = maxSumSubsequence_FB(items);
@@ -126,21 +138,21 @@ int main()
 {
     std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
     maxSumSubsequence(items);
-    std::random_device rd;                          // Generador aleatorio basado en hardware
-    std::mt19937 gen(rd());                         // Motor Mersenne Twister
-    std::uniform_int_distribution<> dis(-100, 100); // Números entre 0 y 100
+    // std::random_device rd;                          // Generador aleatorio basado en hardware
+    // std::mt19937 gen(rd());                         // Motor Mersenne Twister
+    // std::uniform_int_distribution<> dis(-100, 100); // Números entre 0 y 100
 
-    std::vector<int> vec(10);
-    for (auto &num : vec)
-    {
-        num = dis(gen); // Generar números aleatorios
-    }
+    // std::vector<int> vec(10);
+    // for (auto &num : vec)
+    // {
+    //     num = dis(gen); // Generar números aleatorios
+    // }
 
-    // Imprimir el vector
-    for (const auto &num : vec)
-    {
-        std::cout << num << " ";
-    }
+    // // Imprimir el vector
+    // for (const auto &num : vec)
+    // {
+    //     std::cout << num << " ";
+    // }
 
     return 0;
 }
