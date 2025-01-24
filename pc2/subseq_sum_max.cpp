@@ -30,6 +30,67 @@ std::pair<int, int> maxSumSubsequence_FB(std::vector<int> items)
         }
     }
 
-    return {m, p};
+    return {m, p-1};
 }
 
+
+
+std::tuple<int,int,int> maxSumSubsequence_DV(std::vector<int> items,int m, int p){
+    if(m==p){
+        return {m,p,items.at(m)};
+    }
+
+    int sum=0;
+    for(int i=m;i<=p;++i){
+        sum+=items.at(i);
+    }
+    std::tuple<int,int,int> tupleLeft = maxSumSubsequence_DV(items,m,p-1);
+    std::tuple<int,int,int> tupleRight = maxSumSubsequence_DV(items,m+1,p);
+
+    if(sum>std::get<2>(tupleLeft)){
+        if(sum>std::get<2>(tupleRight)){
+            return {m,p,sum};
+        } else {
+            if(std::get<2>(tupleLeft)>std::get<2>(tupleRight)){
+                return tupleLeft;
+            } else {
+                return tupleRight;
+            }
+        }
+    } else {
+        if(std::get<2>(tupleLeft)>std::get<2>(tupleRight)){
+            return tupleLeft;
+        } else {
+            return tupleRight;
+        }
+    }
+}
+
+void maxSumSubsequence(std::vector<int> items){
+    std::pair<int,int> pairAnswer = maxSumSubsequence_FB(items);
+
+    std::cout << "Maxima subsecuencia (FB): [ ";
+    int sumFB=0;
+    for(int i=std::get<0>(pairAnswer);i<=std::get<1>(pairAnswer);++i){
+        sumFB+=items.at(i);
+        std::cout << items.at(i) << " , ";
+    }
+    std::cout   << "]"                                                                              << std::endl
+                << "Suma: "   << sumFB                                                              << std::endl
+                << "Indices: "<< std::get<0>(pairAnswer)   <<  " - " << std::get<1>(pairAnswer)     << std::endl 
+                << std::endl;
+    
+    std::tuple<int,int,int> tupleAnswer = maxSumSubsequence_DV(items,0,items.size()-1);
+    std::cout << "Maxima subsecuencia (DV): [ ";
+    for(int i=std::get<0>(tupleAnswer);i<=std::get<1>(tupleAnswer);++i){
+        std::cout << items.at(i) << " , ";
+    }
+    std::cout   << "]"                                                                              << std::endl
+                << "Suma: "   << std::get<2>(tupleAnswer)                                           << std::endl
+                << "Indices: "<< std::get<0>(tupleAnswer)   <<  " - " << std::get<1>(tupleAnswer)   << std::endl;
+}
+
+int main(){
+    std::vector<int> items = {1,3,-5,4,0,-1,2,4};
+    maxSumSubsequence(items);
+}
