@@ -59,7 +59,7 @@ std::pair<int, int> maxSumSubsequence_FB(std::vector<int> items)
         }
     }
 
-    return {m, p};
+    return {m, p-1};
 }
 
 std::tuple<int, int, int> maxSumSubsequence_DV(std::vector<int> items, int m, int p)
