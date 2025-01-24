@@ -1,9 +1,15 @@
 {
     "files.associations": {
+<<<<<<< HEAD
         ".fantomasignore": "ignore",
         "*.ixx": "cpp",
         "algorithm": "cpp",
         "array": "cpp",
+=======
+        "vector": "cpp",
+        "memory": "cpp",
+        "algorithm": "cpp",
+>>>>>>> 92a80f65bd50835f3cc366b6773c2d3f9d6cf40c
         "atomic": "cpp",
         "bit": "cpp",
         "cctype": "cpp",
@@ -12,7 +18,10 @@
         "cmath": "cpp",
         "compare": "cpp",
         "concepts": "cpp",
+<<<<<<< HEAD
         "cstdarg": "cpp",
+=======
+>>>>>>> 92a80f65bd50835f3cc366b6773c2d3f9d6cf40c
         "cstddef": "cpp",
         "cstdint": "cpp",
         "cstdio": "cpp",
@@ -21,40 +30,59 @@
         "ctime": "cpp",
         "cwchar": "cpp",
         "exception": "cpp",
+<<<<<<< HEAD
         "expected": "cpp",
         "format": "cpp",
         "functional": "cpp",
         "initializer_list": "cpp",
         "iomanip": "cpp",
+=======
+        "format": "cpp",
+        "initializer_list": "cpp",
+>>>>>>> 92a80f65bd50835f3cc366b6773c2d3f9d6cf40c
         "ios": "cpp",
         "iosfwd": "cpp",
         "iostream": "cpp",
         "istream": "cpp",
         "iterator": "cpp",
         "limits": "cpp",
+<<<<<<< HEAD
         "list": "cpp",
         "locale": "cpp",
         "map": "cpp",
         "memory": "cpp",
+=======
+        "locale": "cpp",
+>>>>>>> 92a80f65bd50835f3cc366b6773c2d3f9d6cf40c
         "new": "cpp",
         "optional": "cpp",
         "ostream": "cpp",
         "random": "cpp",
+<<<<<<< HEAD
         "set": "cpp",
         "span": "cpp",
         "sstream": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "string": "cpp",
+=======
+        "stdexcept": "cpp",
+        "streambuf": "cpp",
+>>>>>>> 92a80f65bd50835f3cc366b6773c2d3f9d6cf40c
         "system_error": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
         "typeinfo": "cpp",
+<<<<<<< HEAD
         "unordered_map": "cpp",
         "utility": "cpp",
         "vector": "cpp",
         "xfacet": "cpp",
         "xhash": "cpp",
+=======
+        "utility": "cpp",
+        "xfacet": "cpp",
+>>>>>>> 92a80f65bd50835f3cc366b6773c2d3f9d6cf40c
         "xiosbase": "cpp",
         "xlocale": "cpp",
         "xlocbuf": "cpp",
@@ -66,7 +94,10 @@
         "xmemory": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp",
+<<<<<<< HEAD
         "xtree": "cpp",
+=======
+>>>>>>> 92a80f65bd50835f3cc366b6773c2d3f9d6cf40c
         "xutility": "cpp"
     }
 }
