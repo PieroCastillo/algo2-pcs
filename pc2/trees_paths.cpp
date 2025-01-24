@@ -29,7 +29,7 @@ struct Tree
     Node<T> root;
     Tree()
     {
-        root = Node<T>();
+        root = Node<T>(1);
     }
     Tree(Node<T> root)
     {
@@ -82,9 +82,9 @@ void fillTree(Tree<int> &tree, int height, int m)
     std::cout << "Arbol lleno uwu" << std::endl;
 }
 
-void traverseNodeChildren(Node<int> node)
+void traverseNodeChildren(Node<int> &node)
 {
-    /*if (node.children.empty())
+    if (node.children.empty())
     {
         std::cout << node.data << " - ";
         return;
@@ -92,19 +92,21 @@ void traverseNodeChildren(Node<int> node)
     for (auto &&nodePointer : node.children)
     {
         traverseNodeChildren(*nodePointer);
-    }*/
+    }
 }
 
-void traverseTreeDV(Tree<int> tree)
+void traverseTreeDV(Tree<int> &tree)
 {
     std::cout << "Nodos del arbol: ";
     traverseNodeChildren(tree.root);
+    return;
 }
 
 int main()
 {
-    Tree<int> tree;
+    Tree<int> tree=Tree<int>();
     const int height = 4;
     const int m = 3;
     fillTree(tree, height, m);
+    traverseNodeChildren(tree.root);
 }
