@@ -37,20 +37,18 @@ std::pair<int, int> maxSumSubsequenceCore_DC(std::vector<int> items, int i, int 
 int maxSumSubsequence_FB(std::vector<int> items)
 {
     int res = items[0];
+    int maxEnding = items[0];
 
-    // Outer loop for starting point of subarray
-    for (int i = 0; i < items.size(); i++)
+    for (int i = 1; i < items.size(); i++)
     {
-        int currSum = 0;
 
-        // Inner loop for ending point of subarray
-        for (int j = i; j < items.size(); j++)
-        {
-            currSum = currSum + items[j];
+        // Find the maximum sum ending at index i by either extending
+        // the maximum sum subarray ending at index i - 1 or by
+        // starting a new subarray from index i
+        maxEnding = std::max(maxEnding + items[i], items[i]);
 
-            // Update res if currSum is greater than res
-            res = std::max(res, currSum);
-        }
+        // Update res if maximum subarray sum ending at index i > res
+        res = std::max(res, maxEnding);
     }
     return res;
 }
@@ -120,6 +118,115 @@ int maxSumSubsequence_DV(std::vector<int> &arr)
     return MaxSum(arr, 0, arr.size() - 1);
 }
 
+// std::tuple<int, int, int>; // start,end, sum
+
+std::tuple<int, int, int> subvector_central(std::vector<int> v, int c, int f)
+{
+    // variables locales
+    int m, suma, suma_max;
+    int inicio, final;
+    std::tuple<int, int, int> optimo;
+    m = (c + f) / 2;
+    suma_max = INT_MIN;
+    suma = 0;
+    int lon = v.size() - 1;
+    inicio = m - lon + 1;
+    final = m + lon - 1;
+    if (inicio < 0)
+    {
+        inicio = 0;
+    };
+    if (final > n - 1) //TODO: que crjs es n
+    {
+        for (int i = inicio; i <= n - lon; i++)
+        { // se hara n-lon-inicio+1 veces
+            suma = 0;
+            for (int j = 0; j < lon; j++)
+            { // se hara lon veces
+                suma = suma + v[j + i];
+            };
+            if (suma >= suma_max)
+            {
+                suma_max = suma;
+                optimo = {i, i + lon - 1, suma_max};
+            };
+        };
+    }
+    else
+    {
+        for (int i = inicio; i <= m; i++)
+        { // se hara m-inicio+1 veces
+            suma = 0;
+            for (int j = 0; j < lon; j++)
+            { // se hara lon veces
+                suma = suma + v[j + i];
+            };
+            if (suma >= suma_max)
+            {
+                suma_max = suma;
+                optimo = {i, i + lon - 1, suma_max};
+            };
+        };
+    };
+    return optimo;
+}
+std::tuple<int, int, int> subvector_optimo(std::vector<int> v, int c, int f)
+{
+    // Variables locales
+    int lon = v.size() - 1;
+    std::tuple<int, int, int> izq, der, cent; // Se divide el vector en tres subvectores
+    std::tuple<int, int, int> optimo;         // valor devuelto por el metodo
+    int m, i;
+    int suma = 0;
+    int tamanio_izq, tamanio_der;
+    if (f - c + 1 <= lon)
+    {
+        for (i = c; i <= f; i++)
+        {
+            suma = suma + v[i];
+        };
+        optimo = {c, f, suma};
+    }
+    else
+    {
+        m = (c + f) / 2;
+        izq = subvector_optimo(v, c, m);
+        tamanio_izq = std::get<1>(izq) - std::get<0>(izq) + 1;
+        if (tamanio_izq < lon)
+        {
+            while (tamanio_izq < lon)
+            {
+                std::get<1>(izq)++;
+                std::get<2>(izq) += v[std::get<1>(izq)];
+                tamanio_izq++;
+            }
+        }
+        der = subvector_optimo(v, m + 1, f);
+        tamanio_der = std::get<1>(der) - std::get<0>(der) + 1;
+        if (tamanio_der < lon)
+        {
+            while (tamanio_der < lon)
+            {
+                std::get<0>(der)--;
+                std::get<2>(der) += v[std::get<0>(der)];
+                tamanio_der++;
+            }
+        }
+        cent = subvector_central(v, c, f);
+        if (std::get<2>(izq) >= std::get<2>(der))
+        {
+            if (std::get<2>(izq) >= std::get<2>(cent))
+                optimo = izq;
+            else
+                optimo = cent;
+        }
+        else if (std::get<2>(der) >= std::get<2>(cent))
+            optimo = der;
+        else
+            optimo = cent;
+    };
+    return optimo;
+}; // fin subvector_optimo
 void benchmark(int maxSize, std::stringstream &text)
 {
     std::random_device rd;                          // Generador aleatorio basado en hardware
@@ -160,9 +267,9 @@ int main(int argc, char *argv[])
     else
         size = std::atoi(argv[1]);
 
-    //std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
-    //std::cout << maxSumSubsequence_FB(items) << std::endl;
-    //std::cout << maxSumSubsequence_DV(items) << std::endl;
+    // std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
+    // std::cout << maxSumSubsequence_FB(items) << std::endl;
+    // std::cout << maxSumSubsequence_DV(items) << std::endl;
 
     std::string fileName = "subseq_sum_max_stats.txt";
     std::ofstream file(fileName);
