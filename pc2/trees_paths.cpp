@@ -35,8 +35,19 @@ struct Tree
     {
         this->root = root;
     }
-    void printTreeH(Node<int> &node,string& prefix){
-        cout << prefix << node.data    
+
+    void printTree(){
+        
+        printTreeH(root,"");
+    }
+
+    void printTreeH(Node<int> &node,std::string prefix){
+        std::cout << prefix << node.data << std::endl;
+        for (auto &&nodePointer : node.children)
+        {        
+            printTreeH(*nodePointer,prefix + "|\t");
+        }
+
     }
 };
 
@@ -45,7 +56,7 @@ void fillNode(Node<int> &node, int height, int m, bool hasForcedChild)
     // esta mmd va a ser complejidad O(n!) XDDDD
     if (height == 1)
         return; // si llega a altura 1, ya no debe tener mas hijos
-    srand(time(NULL));
+    
     // para llegar a height minimo uno debe tener un hijo
     int numChild; // num de hijos que va a tener este nodo
     if (hasForcedChild)
@@ -60,7 +71,6 @@ void fillNode(Node<int> &node, int height, int m, bool hasForcedChild)
         return; // 0 hijos, se acaba ahi
     for (int i = 0; i < numChild; ++i)
     {
-        srand(time(NULL));
         int data = rand() % 10 + 1;                                 // valor del 1 al 10
         node.children.push_back(std::make_unique<Node<int>>(data)); // crea un nodo con ese valor y lo pone en el vector de children
     }
@@ -113,6 +123,7 @@ int main()
     Tree<int> tree=Tree<int>();
     const int height = 4;
     const int m = 3;
+    srand(time(NULL));
     fillTree(tree, height, m);
     /*tree.root=Node(10);
     for (int i = 0; i < 3; ++i)
@@ -120,5 +131,6 @@ int main()
         int data = i;                                 // valor del 1 al 10
         tree.root.children.push_back(std::make_unique<Node<int>>(data)); // crea un nodo con ese valor y lo pone en el vector de children
     }*/
-    traverseTreeDV(tree);
+    tree.printTree();
+    //traverseTreeDV(tree);
 }
