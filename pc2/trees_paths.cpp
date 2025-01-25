@@ -16,6 +16,9 @@ struct Node
     {
         this->data = data;
     }
+    void check(){
+        if(children.size()>3) std::cout << std::endl << "ALERTA DE CURIFEO ALIAS DATA: " << data << std::endl<< std::endl;
+    }
 };
 
 template <typename T>
@@ -78,30 +81,27 @@ void fillNode(Node<int> &node, int height, int m, bool hasForcedChild)
             fillNode(*node.children.at(i).get(), height - 1, m, false);
         }
     }
+    node.check();
 }
 
 void fillTree(Tree<int> &tree, int height, int m)
 {
-    int data = rand() % 10 + 1; // valor del 1 al 10
+    int data = rand() % 40 + 1; // valor del 1 al 10
     tree.root = Node<int>(data);
     fillNode(tree.root, height, m, true);
-    std::cout << "Arbol lleno uwu" << std::endl;
+    std::cout << std::endl<< "Arbol lleno uwu" << std::endl;
 }
 
 void traverseNodeChildren(Node<int> &node)
 {
-    if (node.children.empty())
-    {
-        std::cout << node.data << " - ";
-        return;
-    }
+
+    std::cout << node.data << " - ";
     for (auto &&nodePointer : node.children)
     {
         
         traverseNodeChildren(*nodePointer);
     }
-    std::cout << node.data << " - ";
-}
+}   
 
 void traverseTreeDV(Tree<int> &tree)
 {
@@ -112,10 +112,12 @@ void traverseTreeDV(Tree<int> &tree)
 
 int main()
 {
-    Tree<int> tree=Tree<int>();
+    
     const int height = 4;
     const int m = 3;
     srand(time(NULL));
+    for (int i=0;i<1;++i){
+    Tree<int> tree=Tree<int>();
     fillTree(tree, height, m);
     /*tree.root=Node(10);
     for (int i = 0; i < 3; ++i)
@@ -125,4 +127,5 @@ int main()
     }*/
     tree.printTree();
     traverseTreeDV(tree);
+    }
 }
