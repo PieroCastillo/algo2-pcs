@@ -16,11 +16,6 @@ struct Node
     {
         this->data = data;
     }
-    Node(T data, std::vector<std::unique_ptr<Node<T>>> children)
-    {
-        this->data = data;
-        this->children = children;
-    }
 };
 
 template <typename T>
@@ -31,10 +26,6 @@ struct Tree
     {
 
     }
-    Tree(Node<T> root)
-    {
-        this->root = root;
-    }
 
     void printTree(){
         
@@ -43,6 +34,7 @@ struct Tree
 
     void printTreeH(Node<int> &node,std::string prefix){
         std::cout << prefix << node.data << std::endl;
+        if(node.children.empty()) return;
         for (auto &&nodePointer : node.children)
         {        
             printTreeH(*nodePointer,prefix + "|\t");
@@ -132,5 +124,5 @@ int main()
         tree.root.children.push_back(std::make_unique<Node<int>>(data)); // crea un nodo con ese valor y lo pone en el vector de children
     }*/
     tree.printTree();
-    //traverseTreeDV(tree);
+    traverseTreeDV(tree);
 }
