@@ -29,7 +29,7 @@ struct Tree
     Node<T> root;
     Tree()
     {
-        root = Node<T>(1);
+
     }
     Tree(Node<T> root)
     {
@@ -57,6 +57,7 @@ void fillNode(Node<int> &node, int height, int m, bool hasForcedChild)
         return; // 0 hijos, se acaba ahi
     for (int i = 0; i < numChild; ++i)
     {
+        srand(time(NULL));
         int data = rand() % 10 + 1;                                 // valor del 1 al 10
         node.children.push_back(std::make_unique<Node<int>>(data)); // crea un nodo con ese valor y lo pone en el vector de children
     }
@@ -91,8 +92,10 @@ void traverseNodeChildren(Node<int> &node)
     }
     for (auto &&nodePointer : node.children)
     {
+        
         traverseNodeChildren(*nodePointer);
     }
+    std::cout << node.data << " - ";
 }
 
 void traverseTreeDV(Tree<int> &tree)
@@ -108,5 +111,11 @@ int main()
     const int height = 4;
     const int m = 3;
     fillTree(tree, height, m);
+    /*tree.root=Node(10);
+    for (int i = 0; i < 3; ++i)
+    {
+        int data = i;                                 // valor del 1 al 10
+        tree.root.children.push_back(std::make_unique<Node<int>>(data)); // crea un nodo con ese valor y lo pone en el vector de children
+    }*/
     traverseNodeChildren(tree.root);
 }
