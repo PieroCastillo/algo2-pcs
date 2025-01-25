@@ -116,7 +116,7 @@ int main()
     const int height = 6;
     const int m = 2;
     srand(time(NULL));
-    for (int i=0;i<4;++i){
+    for (int i=0;i<50;++i){
         Tree<int> tree=Tree<int>();
         fillTree(tree, height, m);
         /*tree.root=Node(10);
