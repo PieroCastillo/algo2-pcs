@@ -17,7 +17,7 @@ struct Node
         this->data = data;
     }
     void check(){
-        if(children.size()>3) std::cout << std::endl << "ALERTA DE CURIFEO ALIAS DATA: " << data << std::endl<< std::endl;
+        if(children.size()>2) std::cout << std::endl << "ALERTA DE CURIFEO ALIAS DATA: " << data << std::endl<< std::endl;
     }
 };
 
@@ -113,19 +113,19 @@ void traverseTreeDV(Tree<int> &tree)
 int main()
 {
     
-    const int height = 4;
-    const int m = 3;
+    const int height = 6;
+    const int m = 2;
     srand(time(NULL));
-    for (int i=0;i<1;++i){
-    Tree<int> tree=Tree<int>();
-    fillTree(tree, height, m);
-    /*tree.root=Node(10);
-    for (int i = 0; i < 3; ++i)
-    {
-        int data = i;                                 // valor del 1 al 10
-        tree.root.children.push_back(std::make_unique<Node<int>>(data)); // crea un nodo con ese valor y lo pone en el vector de children
-    }*/
-    tree.printTree();
-    traverseTreeDV(tree);
+    for (int i=0;i<4;++i){
+        Tree<int> tree=Tree<int>();
+        fillTree(tree, height, m);
+        /*tree.root=Node(10);
+        for (int i = 0; i < 3; ++i)
+        {
+            int data = i;                                 // valor del 1 al 10
+            tree.root.children.push_back(std::make_unique<Node<int>>(data)); // crea un nodo con ese valor y lo pone en el vector de children
+        }*/
+        tree.printTree();
+        traverseTreeDV(tree);
     }
 }
