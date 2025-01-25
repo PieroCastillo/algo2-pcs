@@ -35,6 +35,9 @@ struct Tree
     {
         this->root = root;
     }
+    void printTreeH(Node<int> &node,string& prefix){
+        cout << prefix << node.data    
+    }
 };
 
 void fillNode(Node<int> &node, int height, int m, bool hasForcedChild)
@@ -117,5 +120,5 @@ int main()
         int data = i;                                 // valor del 1 al 10
         tree.root.children.push_back(std::make_unique<Node<int>>(data)); // crea un nodo con ese valor y lo pone en el vector de children
     }*/
-    traverseNodeChildren(tree.root);
+    traverseTreeDV(tree);
 }
