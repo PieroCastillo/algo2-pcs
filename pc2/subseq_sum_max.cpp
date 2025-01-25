@@ -160,9 +160,9 @@ int main(int argc, char *argv[])
     else
         size = std::atoi(argv[1]);
 
-    std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
-    std::cout << maxSumSubsequence_FB(items) << std::endl;
-    std::cout << maxSumSubsequence_DV(items) << std::endl;
+    //std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
+    //std::cout << maxSumSubsequence_FB(items) << std::endl;
+    //std::cout << maxSumSubsequence_DV(items) << std::endl;
 
     std::string fileName = "subseq_sum_max_stats.txt";
     std::ofstream file(fileName);
