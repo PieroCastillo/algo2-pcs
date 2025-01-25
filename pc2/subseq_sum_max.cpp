@@ -7,6 +7,7 @@
 #include <random>
 #include <string>
 #include <sstream>
+#include <fstream>
 
 /*std::pair<int, int> maxSumSubsequence_DC(std::vector<int> items)
 {
@@ -32,70 +33,91 @@ std::pair<int, int> maxSumSubsequenceCore_DC(std::vector<int> items, int i, int 
     return {m, p};
 }*/
 
-std::pair<int, int> maxSumSubsequence_FB(std::vector<int> items)
+// Kadane’s Algorithm
+int maxSumSubsequence_FB(std::vector<int> items)
 {
-    int m = 0;
-    int p = 0;
+    int res = items[0];
 
+    // Outer loop for starting point of subarray
     for (int i = 0; i < items.size(); i++)
     {
-        for (int j = i; j <= items.size(); j++)
+        int currSum = 0;
+
+        // Inner loop for ending point of subarray
+        for (int j = i; j < items.size(); j++)
         {
-            int newSum = 0;
-            int oldSum = 0;
-            for (int k = i; k <= j; k++)
-            {
-                newSum += items[k];
-            }
-            for (int k = m; k <= p; k++)
-            {
-                oldSum += items[k];
-            }
-            if (newSum > oldSum)
-            {
-                m = i;
-                p = j;
-            }
+            currSum = currSum + items[j];
+
+            // Update res if currSum is greater than res
+            res = std::max(res, currSum);
         }
     }
-
-    return {m, p};
+    return res;
 }
 
-std::tuple<int, int, int> maxSumSubsequence_DV(std::vector<int> items, int m, int p)
+// std::tuple<int, int, int> maxSumSubsequence_DV(std::vector<int> items, int m, int p)
+//  Find the maximum possible sum in arr[] such that arr[m]
+//  is part of it
+int maxCrossingSum(std::vector<int> &items, int l, int m, int h)
 {
-    if (m == p)
-    {
-        return {m, p, items.at(m)};
-    }
 
+    // Include elements on left of mid.
     int sum = 0;
-    for (int i = m; i <= p; ++i)
+    int leftSum = INT_MIN;
+    for (int i = m; i >= l; i--)
     {
-        sum += items.at(i);
+        sum = sum + items[i];
+        if (sum > leftSum)
+            leftSum = sum;
     }
-    std::tuple<int, int, int> tupleLeft = maxSumSubsequence_DV(items, m, p - 1);  // m1, p1, s1
-    std::tuple<int, int, int> tupleRight = maxSumSubsequence_DV(items, m + 1, p); // m2, p2, s2
-    auto [m1, p1, s1] = tupleLeft;
-    auto [m2, p2, s2] = tupleRight;
 
-    if (sum > s1 && sum > s2)
+    // Include elements on right of mid
+    sum = 0;
+    int rightSum = INT_MIN;
+    for (int i = m + 1; i <= h; i++)
     {
-        return {m, p, sum};
+        sum = sum + items[i];
+        if (sum > rightSum)
+            rightSum = sum;
     }
-    if (sum > s1 && s1 > s2)
-    {
-        return tupleLeft;
-    }
-    if (sum > s1)
-    {
-        return tupleRight;
-    }
-    if (s1 > s2)
-    {
-        return tupleLeft;
-    }
-    return tupleRight;
+
+    // Return the sum of maximum left, right, and
+    // cross subarray
+    return (leftSum + rightSum);
+}
+
+// Returns sum of maximum sum subarray in arr[l..h]
+int MaxSum(std::vector<int> &items, int l, int h)
+{
+
+    // Invalid Range: low is greater than high
+    if (l > h)
+        return INT_MIN;
+
+    // Base Case: Only one element
+    if (l == h)
+        return items[l];
+
+    // Find middle point
+    int m = l + (h - l) / 2;
+
+    // Compute the maximum of the three cases:
+    int leftSum = MaxSum(items, l, m);
+    int rightSum = MaxSum(items, m + 1, h);
+    int crossSum = maxCrossingSum(items, l, m, h);
+
+    // Return the maximum of the three
+    if (leftSum >= rightSum && leftSum >= crossSum)
+        return leftSum;
+    else if (rightSum >= leftSum && rightSum >= crossSum)
+        return rightSum;
+    else
+        return crossSum;
+}
+
+int maxSumSubsequence_DV(std::vector<int> &arr)
+{
+    return MaxSum(arr, 0, arr.size() - 1);
 }
 
 void benchmark(int maxSize, std::stringstream &text)
@@ -107,74 +129,51 @@ void benchmark(int maxSize, std::stringstream &text)
     for (int size = 1; size <= maxSize; size++)
     {
         // create random vector
-        std::vector<int> vec(size);
-        for (auto &num : vec)
+        std::vector<int> vec;
+        vec.reserve(size);
+        for (int i = 0; i < vec.capacity(); i++)
         {
-            num = dis(gen);
+            vec.push_back(dis(gen));
         }
 
         // execute and measure time for maxSumSubsequence_FB
-        auto startTime = std::chrono::steady_clock::now();
+        auto startTime = std::chrono::high_resolution_clock::now();
         maxSumSubsequence_FB(vec);
-        auto endTime = std::chrono::steady_clock::now();
+        auto endTime = std::chrono::high_resolution_clock::now();
         auto ellapsedFB = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
 
         // execute and measure time for maxSumSubsequence_DV
-        startTime = std::chrono::steady_clock::now();
-        maxSumSubsequence_DV(vec, 0, vec.size() - 1);
-        endTime = std::chrono::steady_clock::now();
-        auto ellapsedDV = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+        auto startTime2 = std::chrono::high_resolution_clock::now();
+        maxSumSubsequence_DV(vec);
+        auto endTime2 = std::chrono::high_resolution_clock::now();
+        auto ellapsedDV = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime2 - startTime2);
 
         text << "(" << size << ellapsedFB.count() << "," << ellapsedDV.count() << ")";
     }
 }
 
-void maxSumSubsequence(std::vector<int> items)
+int main(int argc, char *argv[])
 {
-    std::pair<int, int> pairAnswer = maxSumSubsequence_FB(items);
+    int size;
+    if (argc == 0)
+        size = 10;
+    else
+        size = std::atoi(argv[1]);
 
-    std::cout << "Maxima subsecuencia (FB): [ ";
-    int sumFB = 0;
-    for (int i = std::get<0>(pairAnswer); i <= std::get<1>(pairAnswer); ++i)
-    {
-        sumFB += items.at(i);
-        std::cout << items.at(i) << " , ";
-    }
-    std::cout << "]" << std::endl
-              << "Suma: " << sumFB << std::endl
-              << "Indices: " << std::get<0>(pairAnswer) << " - " << std::get<1>(pairAnswer) << std::endl
-              << std::endl;
-
-    std::tuple<int, int, int> tupleAnswer = maxSumSubsequence_DV(items, 0, items.size() - 1);
-    std::cout << "Maxima subsecuencia (DV): [ ";
-    for (int i = std::get<0>(tupleAnswer); i <= std::get<1>(tupleAnswer); ++i)
-    {
-        std::cout << items.at(i) << " , ";
-    }
-    std::cout << "]" << std::endl
-              << "Suma: " << std::get<2>(tupleAnswer) << std::endl
-              << "Indices: " << std::get<0>(tupleAnswer) << " - " << std::get<1>(tupleAnswer) << std::endl;
-}
-
-int main()
-{
     std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
-    maxSumSubsequence(items);
-    // std::random_device rd;                          // Generador aleatorio basado en hardware
-    // std::mt19937 gen(rd());                         // Motor Mersenne Twister
-    // std::uniform_int_distribution<> dis(-100, 100); // Números entre 0 y 100
+    std::cout << maxSumSubsequence_FB(items) << std::endl;
+    std::cout << maxSumSubsequence_DV(items) << std::endl;
 
-    // std::vector<int> vec(10);
-    // for (auto &num : vec)
-    // {
-    //     num = dis(gen); // Generar números aleatorios
-    // }
+    std::string fileName = "subseq_sum_max_stats.txt";
+    std::ofstream file(fileName);
 
-    // // Imprimir el vector
-    // for (const auto &num : vec)
-    // {
-    //     std::cout << num << " ";
-    // }
+    std::stringstream stream;
+    benchmark(size, stream);
+
+    file.clear();
+    file << stream.str();
+
+    file.close();
 
     return 0;
 }
