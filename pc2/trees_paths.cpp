@@ -66,7 +66,7 @@ void fillNode(Node<int> &node, int height, int m, bool hasForcedChild)
         return; // 0 hijos, se acaba ahi
     for (int i = 0; i < numChild; ++i)
     {
-        int data = rand() % 10 + 1;                                 // valor del 1 al 10
+        int data = rand() % 40 + 1;                                 // valor del 1 al 10
         node.children.push_back(std::make_unique<Node<int>>(data)); // crea un nodo con ese valor y lo pone en el vector de children
     }
     int forcedChildIndex = rand() % numChild; // al no estar en el nivel 1, minimo uno de los hijos debe tener uno
