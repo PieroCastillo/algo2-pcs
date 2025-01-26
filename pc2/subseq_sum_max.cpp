@@ -34,23 +34,31 @@ std::pair<int, int> maxSumSubsequenceCore_DC(std::vector<int> items, int i, int 
 }*/
 
 // Kadane’s Algorithm
-int maxSumSubsequence_FB(std::vector<int> items)
+std::tuple<int, int, int> maxSumSubsequence_FB(std::vector<int> items)
 {
     int res = items[0];
     int maxEnding = items[0];
-
+    int startIndex = 0;
+    int endIndex = 0;
     for (int i = 1; i < items.size(); i++)
     {
 
         // Find the maximum sum ending at index i by either extending
         // the maximum sum subarray ending at index i - 1 or by
         // starting a new subarray from index i
-        maxEnding = std::max(maxEnding + items[i], items[i]);
-
+        //maxEnding = std::max(maxEnding + items[i], items[i]);
+        if(items[i]<=maxEnding + items[i]){
+            maxEnding=maxEnding + items[i];
+            endIndex=i;
+        } else {
+            startIndex=i;
+            endIndex=i;
+            maxEnding=items[i];
+        }
         // Update res if maximum subarray sum ending at index i > res
         res = std::max(res, maxEnding);
     }
-    return res;
+    return {res,startIndex,endIndex};
 }
 
 // std::tuple<int, int, int> maxSumSubsequence_DV(std::vector<int> items, int m, int p)
@@ -120,7 +128,7 @@ int maxSumSubsequence_DV(std::vector<int> &arr)
 
 // std::tuple<int, int, int>; // start,end, sum
 
-std::tuple<int, int, int> subvector_central(std::vector<int> v, int c, int f)
+/*std::tuple<int, int, int> subvector_central(std::vector<int> v, int c, int f)
 {
     // variables locales
     int m, suma, suma_max;
@@ -226,7 +234,7 @@ std::tuple<int, int, int> subvector_optimo(std::vector<int> v, int c, int f)
             optimo = cent;
     };
     return optimo;
-}; // fin subvector_optimo
+}; // fin subvector_optimo*/
 void benchmark(int maxSize, std::stringstream &text)
 {
     std::random_device rd;                          // Generador aleatorio basado en hardware
@@ -267,11 +275,20 @@ int main(int argc, char *argv[])
     else
         size = std::atoi(argv[1]);
 
-    // std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
-    // std::cout << maxSumSubsequence_FB(items) << std::endl;
+    std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
+    std::tuple <int,int,int> results = maxSumSubsequence_FB(items);
+    int maxSum = std::get<0>(results);
+    int startIndex = std::get<1>(results);
+    int endIndex = std::get<2>(results);
+    std::cout << "Suma: " << maxSum << std::endl
+              << "Subsecuencia: [";
+    for(int i=startIndex;i<=endIndex;++i){
+        std::cout << items.at(i) << ", ";
+    }
+    std::cout << "]";
     // std::cout << maxSumSubsequence_DV(items) << std::endl;
 
-    std::string fileName = "subseq_sum_max_stats.txt";
+    /*std::string fileName = "subseq_sum_max_stats.txt";
     std::ofstream file(fileName);
 
     std::stringstream stream;
@@ -280,7 +297,7 @@ int main(int argc, char *argv[])
     file.clear();
     file << stream.str();
 
-    file.close();
+    file.close();*/
 
     return 0;
 }
