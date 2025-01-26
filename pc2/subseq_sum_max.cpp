@@ -64,12 +64,14 @@ std::tuple<int, int, int> maxSumSubsequence_FB(std::vector<int> items)
 // std::tuple<int, int, int> maxSumSubsequence_DV(std::vector<int> items, int m, int p)
 //  Find the maximum possible sum in arr[] such that arr[m]
 //  is part of it
-int maxCrossingSum(std::vector<int> &items, int l, int m, int h)
+std::tuple<int, int, int> maxCrossingSum(std::vector<int> &items, int l, int m, int h)
 {
 
     // Include elements on left of mid.
     int sum = 0;
     int leftSum = INT_MIN;
+    int startIndex= h;
+    int endIndex = h;
     for (int i = m; i >= l; i--)
     {
         sum = sum + items[i];
@@ -89,16 +91,16 @@ int maxCrossingSum(std::vector<int> &items, int l, int m, int h)
 
     // Return the sum of maximum left, right, and
     // cross subarray
-    return (leftSum + rightSum);
+    return {(leftSum + rightSum),startIndex,endIndex};
 }
 
 // Returns sum of maximum sum subarray in arr[l..h]
-int MaxSum(std::vector<int> &items, int l, int h)
+std::tuple<int, int, int> MaxSum(std::vector<int> &items, int l, int h)
 {
 
     // Invalid Range: low is greater than high
     if (l > h)
-        return INT_MIN;
+        return {INT_MIN,0,0};
 
     // Base Case: Only one element
     if (l == h)
@@ -286,7 +288,7 @@ int main(int argc, char *argv[])
         std::cout << items.at(i) << ", ";
     }
     std::cout << "]";
-    // std::cout << maxSumSubsequence_DV(items) << std::endl;
+    std::cout << maxSumSubsequence_DV(items) << std::endl;
 
     /*std::string fileName = "subseq_sum_max_stats.txt";
     std::ofstream file(fileName);
