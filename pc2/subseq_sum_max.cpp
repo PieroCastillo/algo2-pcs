@@ -49,14 +49,16 @@ std::tuple<int, int, int> maxSumSubsequence_FB(std::vector<int> items)
         //maxEnding = std::max(maxEnding + items[i], items[i]);
         if(items[i]<=maxEnding + items[i]){
             maxEnding=maxEnding + items[i];
-            endIndex=i;
         } else {
             startIndex=i;
-            endIndex=i;
             maxEnding=items[i];
         }
         // Update res if maximum subarray sum ending at index i > res
-        res = std::max(res, maxEnding);
+        //res = std::max(res, maxEnding);
+        if(res<maxEnding){
+            res=maxEnding;
+            endIndex=i;
+        }
     }
     return {res,startIndex,endIndex};
 }
@@ -70,13 +72,15 @@ std::tuple<int, int, int> maxCrossingSum(std::vector<int> &items, int l, int m, 
     // Include elements on left of mid.
     int sum = 0;
     int leftSum = INT_MIN;
-    int startIndex= h;
-    int endIndex = h;
+    int startIndex= m;
+    int endIndex = m;
     for (int i = m; i >= l; i--)
     {
         sum = sum + items[i];
-        if (sum > leftSum)
+        if (sum > leftSum){
             leftSum = sum;
+            startIndex=i;
+        }
     }
 
     // Include elements on right of mid
@@ -85,8 +89,10 @@ std::tuple<int, int, int> maxCrossingSum(std::vector<int> &items, int l, int m, 
     for (int i = m + 1; i <= h; i++)
     {
         sum = sum + items[i];
-        if (sum > rightSum)
+        if (sum > rightSum){
             rightSum = sum;
+            endIndex=i;
+        }
     }
 
     // Return the sum of maximum left, right, and
@@ -104,26 +110,30 @@ std::tuple<int, int, int> MaxSum(std::vector<int> &items, int l, int h)
 
     // Base Case: Only one element
     if (l == h)
-        return items[l];
+        return {items[l],l,h};
 
     // Find middle point
     int m = l + (h - l) / 2;
 
     // Compute the maximum of the three cases:
-    int leftSum = MaxSum(items, l, m);
-    int rightSum = MaxSum(items, m + 1, h);
-    int crossSum = maxCrossingSum(items, l, m, h);
+    std::tuple<int, int, int> leftSumRes = MaxSum(items, l, m);
+    std::tuple<int, int, int> rightSumRes = MaxSum(items, m + 1, h);
+    std::tuple<int, int, int> crossSumRes = maxCrossingSum(items, l, m, h);
+
+    int leftSum = std::get<0>(leftSumRes);
+    int rightSum = std::get<0>(rightSumRes);
+    int crossSum = std::get<0>(crossSumRes);
 
     // Return the maximum of the three
     if (leftSum >= rightSum && leftSum >= crossSum)
-        return leftSum;
+        return leftSumRes;
     else if (rightSum >= leftSum && rightSum >= crossSum)
-        return rightSum;
+        return rightSumRes;
     else
-        return crossSum;
+        return crossSumRes;
 }
 
-int maxSumSubsequence_DV(std::vector<int> &arr)
+std::tuple<int, int, int> maxSumSubsequence_DV(std::vector<int> &arr)
 {
     return MaxSum(arr, 0, arr.size() - 1);
 }
@@ -277,18 +287,30 @@ int main(int argc, char *argv[])
     else
         size = std::atoi(argv[1]);
 
-    std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
-    std::tuple <int,int,int> results = maxSumSubsequence_FB(items);
-    int maxSum = std::get<0>(results);
-    int startIndex = std::get<1>(results);
-    int endIndex = std::get<2>(results);
-    std::cout << "Suma: " << maxSum << std::endl
-              << "Subsecuencia: [";
-    for(int i=startIndex;i<=endIndex;++i){
+    std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4,1,2,-2};
+    std::tuple <int,int,int> resultsFB = maxSumSubsequence_FB(items);
+    int maxSumFB = std::get<0>(resultsFB);
+    int startIndexFB = std::get<1>(resultsFB);
+    int endIndexFB = std::get<2>(resultsFB);
+    std::cout << "Suma (FB): " << maxSumFB << std::endl
+              << "Subsecuencia (FB): [";
+    for(int i=startIndexFB;i<=endIndexFB;++i){
         std::cout << items.at(i) << ", ";
     }
-    std::cout << "]";
-    std::cout << maxSumSubsequence_DV(items) << std::endl;
+    std::cout << "]"<< std::endl<< std::endl;
+
+    std::tuple <int,int,int> resultsDV = maxSumSubsequence_DV(items);
+    int maxSumDV = std::get<0>(resultsDV);
+    int startIndexDV = std::get<1>(resultsDV);
+    int endIndexDV = std::get<2>(resultsDV);
+    std::cout << "Suma (DV): " << maxSumDV << std::endl
+              << "Subsecuencia (DV): [";
+    for(int i=startIndexDV;i<=endIndexDV;++i){
+        std::cout << items.at(i) << ", ";
+    }
+    std::cout << "]"<< std::endl;
+
+    //std::cout << maxSumSubsequence_DV(items) << std::endl;
 
     /*std::string fileName = "subseq_sum_max_stats.txt";
     std::ofstream file(fileName);
