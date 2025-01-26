@@ -275,11 +275,20 @@ int main(int argc, char *argv[])
     else
         size = std::atoi(argv[1]);
 
-    // std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
-    // std::cout << maxSumSubsequence_FB(items) << std::endl;
+    std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
+    std::tuple <int,int,int> results = maxSumSubsequence_FB(items);
+    int maxSum = std::get<0>(results);
+    int startIndex = std::get<1>(results);
+    int endIndex = std::get<2>(results);
+    std::cout << "Suma: " << maxSum << std::endl
+              << "Subsecuencia: [";
+    for(int i=startIndex;i<=endIndex;++i){
+        std::cout << items.at(i) << ", ";
+    }
+    std::cout << "]";
     // std::cout << maxSumSubsequence_DV(items) << std::endl;
 
-    std::string fileName = "subseq_sum_max_stats.txt";
+    /*std::string fileName = "subseq_sum_max_stats.txt";
     std::ofstream file(fileName);
 
     std::stringstream stream;
@@ -288,7 +297,7 @@ int main(int argc, char *argv[])
     file.clear();
     file << stream.str();
 
-    file.close();
+    file.close();*/
 
     return 0;
 }
