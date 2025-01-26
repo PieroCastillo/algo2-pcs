@@ -5,6 +5,11 @@
 #include <cstdlib>
 #include <queue>
 #include <functional>
+#include <chrono>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <deque>
 
 template <typename T>
 struct Node
@@ -96,13 +101,13 @@ void fillTree(Tree<int> &tree, int height, int m)
     int data = rand() % 40 + 1; // valor del 1 al 10
     tree.root = Node<int>(data);
     fillNode(tree.root, height, m, true);
-    //std::cout << std::endl << "Arbol lleno uwu" << std::endl;
+    // std::cout << std::endl << "Arbol lleno uwu" << std::endl;
 }
 
 void traverseNodeChildren(Node<int> &node, int &counter)
 {
     counter++;
-    //std::cout << node.data << " - ";
+    // std::cout << node.data << " - ";
     for (auto &&nodePointer : node.children)
     {
         traverseNodeChildren(*nodePointer, counter);
@@ -111,10 +116,10 @@ void traverseNodeChildren(Node<int> &node, int &counter)
 
 void traverseTreeDV(Tree<int> &tree)
 {
-    //std::cout << "Nodos del arbol: ";
+    // std::cout << "Nodos del arbol: ";
     int counter = 0;
     traverseNodeChildren(tree.root, counter);
-    std::cout << "Hay " << counter << " nodos" << std::endl;
+    // std::cout << "Hay " << counter << " nodos" << std::endl;
 }
 
 void traverseTreeFB(Tree<int> &tree)
@@ -128,34 +133,71 @@ void traverseTreeFB(Tree<int> &tree)
         counter++;
         auto &node = toVisit.front();
         // Do something
-        //std::cout << node.get().data << std::endl;
+        // std::cout << node.get().data << std::endl;
         toVisit.pop();
         for (auto &child : node.get().children)
         {
             toVisit.push(std::ref(*child));
         }
     }
-    std::cout << "Hay " << counter << " nodos" << std::endl;
+    // std::cout << "Hay " << counter << " nodos" << std::endl;
 }
 
-int main()
+void benchmark(int maxHeight, int maxMAry, std::ofstream &text)
 {
-
-    const int height = 6;
-    const int m = 2;
-    srand(time(NULL));
-    for (int i=0;i<4;++i)
+    for (int m = 1; m <= maxMAry; ++m)
     {
-        Tree<int> tree=Tree<int>();
-        fillTree(tree, height, m);
-        /*tree.root=Node(10);
-        for (int i = 0; i < 3; ++i)
+        for (int h = 1; h <= maxHeight; ++h)
         {
-            int data = i;                                 // valor del 1 al 10
-            tree.root.children.push_back(std::make_unique<Node<int>>(data)); // crea un nodo con ese valor y lo pone en el vector de children
-        }*/
-        //tree.printTree();
-        traverseTreeDV(tree);
-        traverseTreeFB(tree);
+            std::cout << "(" << m << "," << h << ")" << std::endl;
+            std::cout << "break before tree Creation" << std::endl;
+            std::unique_ptr<Tree<int>> tree = std::make_unique<Tree<int>>();
+            fillTree(*tree, h, m);
+            std::cout << "break after tree Creation " << std::endl;
+
+            // execute and measure time for maxSumSubsequence_FB
+            auto startTime = std::chrono::high_resolution_clock::now();
+            traverseTreeFB(*tree);
+            std::cout << "break after FB" << std::endl;
+            auto endTime = std::chrono::high_resolution_clock::now();
+            auto ellapsedFB = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+
+            // execute and measure time for maxSumSubsequence_DV
+            auto startTime2 = std::chrono::high_resolution_clock::now();
+            traverseTreeDV(*tree);
+            std::cout << "break after DV" << std::endl;
+            auto endTime2 = std::chrono::high_resolution_clock::now();
+            auto ellapsedDV = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime2 - startTime2);
+
+            text << "(" << m << "," << h << ", " << ellapsedFB.count() << "," << ellapsedDV.count() << ")";
+        }
     }
+}
+
+// args order: maxHeight, maxM
+int main(int argc, char *argv[])
+{
+    int maxHeight = 6;
+    int maxM = 2;
+    srand(time(NULL));
+
+    if (argc > 1)
+    {
+        maxHeight = std::atoi(argv[1]);
+        maxM = std::atoi(argv[2]);
+    }
+    // std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4};
+    // std::cout << maxSumSubsequence_FB(items) << std::endl;
+    // std::cout << maxSumSubsequence_DV(items) << std::endl;
+
+    std::string fileName = "tree_paths_stats.txt";
+    std::ofstream file(fileName);
+
+    // std::stringstream stream;
+
+    file.clear();
+    benchmark(maxHeight, maxM, file);
+    file.close();
+
+    return 0;
 }
