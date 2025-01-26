@@ -287,7 +287,7 @@ int main(int argc, char *argv[])
     else
         size = std::atoi(argv[1]);
 
-    std::vector<int> items = {1, 3, -5, 4, 0, -1, 2, 4,1,2,-2};
+    std::vector<int> items = {2,-4,3,2,-3,3,4,2,-1,-5,7,-2};
     std::tuple <int,int,int> resultsFB = maxSumSubsequence_FB(items);
     int maxSumFB = std::get<0>(resultsFB);
     int startIndexFB = std::get<1>(resultsFB);
