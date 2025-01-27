@@ -29,7 +29,7 @@ void large_common_subseq_FB(std::string s1,std::string s2){
 }
 
 
-void large_common_subseq_DV(std::string &s1,std::string &s2){
+void large_common_subseq_PD(std::string &s1,std::string &s2){
     int m=s1.size();
     int n=s2.size();
     std::vector<std::vector<std::string>> table (m+1,std::vector<std::string>(n + 1, ""));
@@ -58,5 +58,5 @@ int main(){
     std::string s2= "47etyhgfhd5";
 
     large_common_subseq_FB(s1,s2);
-    large_common_subseq_DV(s1,s2);
+    large_common_subseq_PD(s1,s2);
 }
