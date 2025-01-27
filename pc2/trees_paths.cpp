@@ -23,14 +23,6 @@ struct Node
     {
         this->data = data;
     }
-    void check()
-    {
-        if (children.size() > 2)
-            std::cout << std::endl
-                      << data << std::endl
-                      << std::endl;
-        // std::cout << std::endl << "ALERTA DE CURIFEO ALIAS DATA: " << data << std::endl<< std::endl;
-    }
 };
 
 template <typename T>
@@ -39,22 +31,6 @@ struct Tree
     Node<T> root;
     Tree()
     {
-    }
-
-    void printTree()
-    {
-        printTreeH(root, "");
-    }
-
-    void printTreeH(Node<int> &node, std::string prefix)
-    {
-        std::cout << prefix << node.data << std::endl;
-        if (node.children.empty())
-            return;
-        for (auto &&nodePointer : node.children)
-        {
-            printTreeH(*nodePointer, prefix + "|\t");
-        }
     }
 };
 
@@ -104,73 +80,61 @@ void fillTree(Tree<int> &tree, int height, int m)
     // std::cout << std::endl << "Arbol lleno uwu" << std::endl;
 }
 
-void traverseNodeChildren(Node<int> &node, int &counter)
+void traverseNodeChildren(Node<int> &node)
 {
-    counter++;
-    // std::cout << node.data << " - ";
     for (auto &&nodePointer : node.children)
     {
-        traverseNodeChildren(*nodePointer, counter);
+        traverseNodeChildren(*nodePointer);
     }
 }
 
 void traverseTreeDV(Tree<int> &tree)
 {
-    // std::cout << "Nodos del arbol: ";
-    int counter = 0;
-    traverseNodeChildren(tree.root, counter);
-    // std::cout << "Hay " << counter << " nodos" << std::endl;
+    traverseNodeChildren(tree.root);
 }
 
 void traverseTreeFB(Tree<int> &tree)
 {
-    int counter = 0;
     std::queue<std::reference_wrapper<Node<int>>> toVisit;
     toVisit.push(std::ref(tree.root));
 
     while (!toVisit.empty())
     {
-        counter++;
         auto &node = toVisit.front();
-        // Do something
-        // std::cout << node.get().data << std::endl;
         toVisit.pop();
         for (auto &child : node.get().children)
         {
             toVisit.push(std::ref(*child));
         }
     }
-    // std::cout << "Hay " << counter << " nodos" << std::endl;
 }
 
-void benchmark(int maxHeight, int maxMAry, std::ofstream &text)
+void benchmark(int maxHeight, int m, std::ofstream &text)
 {
-    for (int m = 1; m <= maxMAry; ++m)
+    // max: m=3,h=21; m=2,h=60
+    for (int h = 1; h <= maxHeight; ++h)
     {
-        for (int h = 1; h <= maxHeight; ++h)
-        {
-            std::cout << "(" << m << "," << h << ")" << std::endl;
-            std::cout << "break before tree Creation" << std::endl;
-            std::unique_ptr<Tree<int>> tree = std::make_unique<Tree<int>>();
-            fillTree(*tree, h, m);
-            std::cout << "break after tree Creation " << std::endl;
+        std::cout << "(" << m << "," << h << ")" << std::endl;
+        std::cout << "break before tree Creation" << std::endl;
+        std::unique_ptr<Tree<int>> tree = std::make_unique<Tree<int>>();
+        fillTree(*tree, h, m);
+        std::cout << "break after tree Creation " << std::endl;
 
-            // execute and measure time for maxSumSubsequence_FB
-            auto startTime = std::chrono::high_resolution_clock::now();
-            traverseTreeFB(*tree);
-            std::cout << "break after FB" << std::endl;
-            auto endTime = std::chrono::high_resolution_clock::now();
-            auto ellapsedFB = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+        // execute and measure time for maxSumSubsequence_FB
+        auto startTime = std::chrono::high_resolution_clock::now();
+        traverseTreeFB(*tree);
+        std::cout << "break after FB" << std::endl;
+        auto endTime = std::chrono::high_resolution_clock::now();
+        auto ellapsedFB = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
 
-            // execute and measure time for maxSumSubsequence_DV
-            auto startTime2 = std::chrono::high_resolution_clock::now();
-            traverseTreeDV(*tree);
-            std::cout << "break after DV" << std::endl;
-            auto endTime2 = std::chrono::high_resolution_clock::now();
-            auto ellapsedDV = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime2 - startTime2);
+        // execute and measure time for maxSumSubsequence_DV
+        auto startTime2 = std::chrono::high_resolution_clock::now();
+        traverseTreeDV(*tree);
+        std::cout << "break after DV" << std::endl;
+        auto endTime2 = std::chrono::high_resolution_clock::now();
+        auto ellapsedDV = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime2 - startTime2);
 
-            text << "(" << m << "," << h << ", " << ellapsedFB.count() << "," << ellapsedDV.count() << ")";
-        }
+        text << "(" << m << "," << h << ", " << ellapsedFB.count() << "," << ellapsedDV.count() << ")";
     }
 }
 
@@ -196,7 +160,9 @@ int main(int argc, char *argv[])
     // std::stringstream stream;
 
     file.clear();
-    benchmark(maxHeight, maxM, file);
+    benchmark(60, 2, file);
+    file << std::endl;
+    benchmark(21,3, file);
     file.close();
 
     return 0;
