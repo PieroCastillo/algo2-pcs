@@ -22,14 +22,14 @@ std::string largeCommonSubseqFBH(std::string &s1,std::string &s2,int m, int n){
 }
 
 
-void large_common_subseq_FB(std::string s1,std::string s2){
+void largeCommonSubseqFB(std::string s1,std::string s2){
     std::string result = largeCommonSubseqFBH(s1,s2,s1.size(),s2.size());
     std::cout << "Largest common subsequence (FB): " << result << std::endl
               << "Length: " << result.size()              << std::endl;
 }
 
 
-void large_common_subseq_PD(std::string &s1,std::string &s2){
+void largeCommonSubseqPD(std::string &s1,std::string &s2){
     int m=s1.size();
     int n=s2.size();
     std::vector<std::vector<std::string>> table (m+1,std::vector<std::string>(n + 1, ""));
@@ -57,6 +57,6 @@ int main(){
     std::string s1= "f34rrfgdruu56";
     std::string s2= "47etyhgfhd5";
 
-    large_common_subseq_FB(s1,s2);
-    large_common_subseq_PD(s1,s2);
+    largeCommonSubseqFB(s1,s2);
+    largeCommonSubseqPD(s1,s2);
 }
