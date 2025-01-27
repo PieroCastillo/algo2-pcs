@@ -2,20 +2,21 @@
 #include <vector>
 
 
-int taskScheduleFB(std::vector<int> &tasks){
+int taskScheduleFB(std::vector<int> tasks, int currSum){
     if(tasks.size()==1){
-        return tasks[0];
+        return currSum + tasks[0];
     }
     int timeSum=INT_MAX;
     for(int i=0;i<tasks.size();++i){
         std::vector<int> subVector;
         int k=0;
-        for(int j=0;j<tasks.size();++i){
+        for(int j=0;j<tasks.size()-1;++j){
             if(k==i) ++k;
             subVector.push_back(tasks[k++]);
         }
-        int timeSum1=taskScheduleFB(subVector);
-        timeSum1 += tasks[i];
+        currSum += tasks[i];
+        int timeSum1=taskScheduleFB(subVector,currSum)+currSum;
+        
         if(timeSum1<timeSum){
             timeSum=timeSum1;
         }
@@ -25,5 +26,5 @@ int taskScheduleFB(std::vector<int> &tasks){
 int main(){
     std::vector<int> tasks = {15,8,3,10};
     std::cout << "DIST" << std::endl;
-    std::cout << taskScheduleFB(tasks) << std::endl;
+    std::cout << taskScheduleFB(tasks,0) << std::endl;
 }
