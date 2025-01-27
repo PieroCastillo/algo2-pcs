@@ -1,6 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <memory>
+#include <tuple>
+#include <chrono>
+#include <random>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <chrono>
 
 std::string largeCommonSubseqFBH(std::string &s1, std::string &s2, int m, int n)
 {
@@ -74,11 +83,65 @@ void largeCommonSubseqPD(std::string &s1, std::string &s2)
               << "Length: " << result.size() << std::endl;
 }
 
-int main()
+std::string generateRandomString(size_t length, std::string characters,std::uniform_int_distribution<> dist,std::mt19937 gen)
 {
-    std::string s1 = "f34rrfgdruu56";
-    std::string s2 = "47etyhgfhd5";
+    std::string randomString;
+    for (size_t i = 0; i < length; ++i)
+    {
+        randomString += characters[dist(gen)];
+    }
+    return randomString;
+}
 
-    largeCommonSubseqFB(s1, s2);
-    largeCommonSubseqPD(s1, s2);
+void benchmark(int maxSize, std::stringstream &text)
+{
+    const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    std::random_device rd;  // Generador de números aleatorios basado en hardware
+    std::mt19937 gen(rd()); // Motor de generación de números aleatorios
+    std::uniform_int_distribution<> dist(0, characters.size() - 1);
+    for (int size = 1; size <= maxSize; size++)
+    {
+        std::string str1 = generateRandomString(size, characters, dist, gen);
+        std::string str2 = generateRandomString(size, characters, dist, gen);
+
+        // execute and measure time for maxSumSubsequence_FB
+        auto startTime = std::chrono::high_resolution_clock::now();
+        largeCommonSubseqFB(str1, str2);
+        auto endTime = std::chrono::high_resolution_clock::now();
+        auto ellapsedFB = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+
+        // execute and measure time for maxSumSubsequence_DV
+        auto startTime2 = std::chrono::high_resolution_clock::now();
+        largeCommonSubseqPD(str1, str2);
+        auto endTime2 = std::chrono::high_resolution_clock::now();
+        auto ellapsedDV = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime2 - startTime2);
+
+        text << "(" << size << "," << ellapsedFB.count() << "," << ellapsedDV.count() << "),";
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    int size;
+    if (argc == 0)
+        size = 10;
+    else
+        size = std::atoi(argv[1]);
+
+    // std::string s1 = "f34rrfgdruu56";
+    // std::string s2 = "47etyhgfhd5";
+
+    // largeCommonSubseqFB(s1, s2);
+    // largeCommonSubseqPD(s1, s2);
+
+    std::string fileName = "large_common_subseq_stats.txt";
+    std::ofstream file(fileName);
+
+    std::stringstream stream;
+    benchmark(size, stream);
+
+    file.clear();
+    file << stream.str();
+
+    file.close();
 }
