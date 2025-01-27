@@ -2,9 +2,9 @@
 #include <vector>
 
 
-int taskScheduleFB(std::vector<int> tasks, int currSum){
-    if(tasks.size()==1){
-        return currSum + tasks[0];
+int taskScheduleFB(std::vector<int> tasks,int currSum){
+    if(tasks.size()==0){
+        return currSum;
     }
     int timeSum=INT_MAX;
     for(int i=0;i<tasks.size();++i){
@@ -14,11 +14,29 @@ int taskScheduleFB(std::vector<int> tasks, int currSum){
             if(k==i) ++k;
             subVector.push_back(tasks[k++]);
         }
-        currSum += tasks[i];
-        int timeSum1=taskScheduleFB(subVector,currSum)+currSum;
-        
-        if(timeSum1<timeSum){
-            timeSum=timeSum1;
+        int timeSumi=taskScheduleFB(subVector,currSum+tasks[i])+currSum;
+        if(timeSumi<timeSum){
+            timeSum=timeSumi;
+        }
+    }
+    return timeSum;
+}
+
+int taskSchedulePD(std::vector<int> tasks,int currSum){
+    if(tasks.size()==0){
+        return currSum;
+    }
+    int timeSum=INT_MAX;
+    for(int i=0;i<tasks.size();++i){
+        std::vector<int> subVector;
+        int k=0;
+        for(int j=0;j<tasks.size()-1;++j){
+            if(k==i) ++k;
+            subVector.push_back(tasks[k++]);
+        }
+        int timeSumi=taskScheduleFB(subVector,currSum+tasks[i])+currSum;
+        if(timeSumi<timeSum){
+            timeSum=timeSumi;
         }
     }
     return timeSum;
