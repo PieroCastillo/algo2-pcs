@@ -46,21 +46,25 @@ std::tuple<int, int, int> maxSumSubsequence_FB(std::vector<int> items)
         // Find the maximum sum ending at index i by either extending
         // the maximum sum subarray ending at index i - 1 or by
         // starting a new subarray from index i
-        //maxEnding = std::max(maxEnding + items[i], items[i]);
-        if(items[i]<=maxEnding + items[i]){
-            maxEnding=maxEnding + items[i];
-        } else {
-            startIndex=i;
-            maxEnding=items[i];
+        // maxEnding = std::max(maxEnding + items[i], items[i]);
+        if (items[i] <= maxEnding + items[i])
+        {
+            maxEnding = maxEnding + items[i];
+        }
+        else
+        {
+            startIndex = i;
+            maxEnding = items[i];
         }
         // Update res if maximum subarray sum ending at index i > res
-        //res = std::max(res, maxEnding);
-        if(res<maxEnding){
-            res=maxEnding;
-            endIndex=i;
+        // res = std::max(res, maxEnding);
+        if (res < maxEnding)
+        {
+            res = maxEnding;
+            endIndex = i;
         }
     }
-    return {res,startIndex,endIndex};
+    return {res, startIndex, endIndex};
 }
 
 // std::tuple<int, int, int> maxSumSubsequence_DV(std::vector<int> items, int m, int p)
@@ -72,14 +76,15 @@ std::tuple<int, int, int> maxCrossingSum(std::vector<int> &items, int l, int m, 
     // Include elements on left of mid.
     int sum = 0;
     int leftSum = INT_MIN;
-    int startIndex= m;
+    int startIndex = m;
     int endIndex = m;
     for (int i = m; i >= l; i--)
     {
         sum = sum + items[i];
-        if (sum > leftSum){
+        if (sum > leftSum)
+        {
             leftSum = sum;
-            startIndex=i;
+            startIndex = i;
         }
     }
 
@@ -89,15 +94,16 @@ std::tuple<int, int, int> maxCrossingSum(std::vector<int> &items, int l, int m, 
     for (int i = m + 1; i <= h; i++)
     {
         sum = sum + items[i];
-        if (sum > rightSum){
+        if (sum > rightSum)
+        {
             rightSum = sum;
-            endIndex=i;
+            endIndex = i;
         }
     }
 
     // Return the sum of maximum left, right, and
     // cross subarray
-    return {(leftSum + rightSum),startIndex,endIndex};
+    return {(leftSum + rightSum), startIndex, endIndex};
 }
 
 // Returns sum of maximum sum subarray in arr[l..h]
@@ -106,11 +112,11 @@ std::tuple<int, int, int> MaxSum(std::vector<int> &items, int l, int h)
 
     // Invalid Range: low is greater than high
     if (l > h)
-        return {INT_MIN,0,0};
+        return {INT_MIN, 0, 0};
 
     // Base Case: Only one element
     if (l == h)
-        return {items[l],l,h};
+        return {items[l], l, h};
 
     // Find middle point
     int m = l + (h - l) / 2;
@@ -275,7 +281,7 @@ void benchmark(int maxSize, std::stringstream &text)
         auto endTime2 = std::chrono::high_resolution_clock::now();
         auto ellapsedDV = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime2 - startTime2);
 
-        text << "(" << size << ellapsedFB.count() << "," << ellapsedDV.count() << ")";
+        text << "(" << size << "," << ellapsedFB.count() << "," << ellapsedDV.count() << "),";
     }
 }
 
@@ -287,32 +293,32 @@ int main(int argc, char *argv[])
     else
         size = std::atoi(argv[1]);
 
-    std::vector<int> items = {2,-4,3,2,-3,3,4,2,-1,-5,7,-2};
-    std::tuple <int,int,int> resultsFB = maxSumSubsequence_FB(items);
-    int maxSumFB = std::get<0>(resultsFB);
-    int startIndexFB = std::get<1>(resultsFB);
-    int endIndexFB = std::get<2>(resultsFB);
-    std::cout << "Suma (FB): " << maxSumFB << std::endl
-              << "Subsecuencia (FB): [";
-    for(int i=startIndexFB;i<=endIndexFB;++i){
-        std::cout << items.at(i) << ", ";
-    }
-    std::cout << "]"<< std::endl<< std::endl;
+    // std::vector<int> items = {2,-4,3,2,-3,3,4,2,-1,-5,7,-2};
+    // std::tuple <int,int,int> resultsFB = maxSumSubsequence_FB(items);
+    // int maxSumFB = std::get<0>(resultsFB);
+    // int startIndexFB = std::get<1>(resultsFB);
+    // int endIndexFB = std::get<2>(resultsFB);
+    // std::cout << "Suma (FB): " << maxSumFB << std::endl
+    //           << "Subsecuencia (FB): [";
+    // for(int i=startIndexFB;i<=endIndexFB;++i){
+    //     std::cout << items.at(i) << ", ";
+    // }
+    // std::cout << "]"<< std::endl<< std::endl;
 
-    std::tuple <int,int,int> resultsDV = maxSumSubsequence_DV(items);
-    int maxSumDV = std::get<0>(resultsDV);
-    int startIndexDV = std::get<1>(resultsDV);
-    int endIndexDV = std::get<2>(resultsDV);
-    std::cout << "Suma (DV): " << maxSumDV << std::endl
-              << "Subsecuencia (DV): [";
-    for(int i=startIndexDV;i<=endIndexDV;++i){
-        std::cout << items.at(i) << ", ";
-    }
-    std::cout << "]"<< std::endl;
+    // std::tuple <int,int,int> resultsDV = maxSumSubsequence_DV(items);
+    // int maxSumDV = std::get<0>(resultsDV);
+    // int startIndexDV = std::get<1>(resultsDV);
+    // int endIndexDV = std::get<2>(resultsDV);
+    // std::cout << "Suma (DV): " << maxSumDV << std::endl
+    //           << "Subsecuencia (DV): [";
+    // for(int i=startIndexDV;i<=endIndexDV;++i){
+    //     std::cout << items.at(i) << ", ";
+    // }
+    // std::cout << "]"<< std::endl;
 
-    //std::cout << maxSumSubsequence_DV(items) << std::endl;
+    // std::cout << maxSumSubsequence_DV(items) << std::endl;
 
-    /*std::string fileName = "subseq_sum_max_stats.txt";
+    std::string fileName = "subseq_sum_max_stats.txt";
     std::ofstream file(fileName);
 
     std::stringstream stream;
@@ -321,7 +327,7 @@ int main(int argc, char *argv[])
     file.clear();
     file << stream.str();
 
-    file.close();*/
+    file.close();
 
     return 0;
 }
